@@ -1,0 +1,216 @@
+import { useEffect, useRef, useState } from "react";
+
+interface Props {
+  onClose: () => void;
+}
+
+export function ShootingStarsOverlay({ onClose }: Props) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animRef = useRef<number>(0);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    interface Particle { x: number; y: number; vx: number; vy: number; r: number; alpha: number; color: string; }
+    interface Meteor { x: number; y: number; vx: number; vy: number; len: number; alpha: number; trail: { x: number; y: number }[]; }
+
+    const particles: Particle[] = [];
+    const meteors: Meteor[] = [];
+
+    const colors = ["#fff", "#d4a0c0", "#d4af70", "#ffd6e7", "#fffde0"];
+
+    for (let i = 0; i < 200; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        r: Math.random() * 2 + 0.5,
+        alpha: Math.random() * 0.8 + 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+
+    const spawnMeteor = () => {
+      meteors.push({
+        x: Math.random() * canvas.width * 0.7,
+        y: Math.random() * canvas.height * 0.3,
+        vx: Math.random() * 6 + 4,
+        vy: Math.random() * 4 + 2,
+        len: Math.random() * 150 + 80,
+        alpha: 1,
+        trail: [],
+      });
+    };
+
+    const meteorInterval = setInterval(spawnMeteor, 800);
+    spawnMeteor();
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        p.alpha = 0.2 + 0.8 * Math.abs(Math.sin(Date.now() / 1000 + p.x));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.trail.push({ x: m.x, y: m.y });
+        if (m.trail.length > 30) m.trail.shift();
+        m.x += m.vx;
+        m.y += m.vy;
+        m.alpha -= 0.008;
+
+        if (m.alpha <= 0 || m.x > canvas.width + 100 || m.y > canvas.height + 100) {
+          meteors.splice(i, 1);
+          continue;
+        }
+
+        if (m.trail.length > 1) {
+          const grad = ctx.createLinearGradient(
+            m.trail[0].x, m.trail[0].y, m.x, m.y
+          );
+          grad.addColorStop(0, "rgba(255,255,255,0)");
+          grad.addColorStop(0.5, "rgba(212,175,112,0.4)");
+          grad.addColorStop(1, `rgba(255,255,255,${m.alpha})`);
+          ctx.beginPath();
+          ctx.moveTo(m.trail[0].x, m.trail[0].y);
+          m.trail.forEach(pt => ctx.lineTo(pt.x, pt.y));
+          ctx.lineTo(m.x, m.y);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = m.alpha;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = m.alpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      animRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      clearInterval(meteorInterval);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.8s ease",
+      }}
+    >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+      >
+        <source src="/Fondo.mp4" type="video/mp4" />
+      </video>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(5,2,20,0.5)" }} />
+      <canvas
+        ref={canvasRef}
+        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(36px, 8vw, 72px)",
+            color: "#fff",
+            textShadow: "0 0 40px rgba(212,175,112,0.8), 0 0 80px rgba(212,160,192,0.5)",
+            marginBottom: "16px",
+            textAlign: "center",
+            animation: "pulseText 3s ease-in-out infinite",
+          }}
+        >
+          Cierra los ojos y pide un deseo
+        </p>
+        <p
+          style={{
+            fontFamily: "'Raleway', sans-serif",
+            fontSize: "clamp(13px, 3vw, 18px)",
+            color: "rgba(255,214,231,0.85)",
+            letterSpacing: "0.15em",
+            textAlign: "center",
+            marginBottom: "40px",
+          }}
+        >
+          ✨ El universo escucha los deseos del corazón ✨
+        </p>
+        <button
+          onClick={onClose}
+          style={{
+            background: "linear-gradient(135deg, rgba(212,160,192,0.3), rgba(212,175,112,0.3))",
+            border: "1px solid rgba(255,255,255,0.4)",
+            color: "#fff",
+            padding: "12px 32px",
+            borderRadius: "50px",
+            fontFamily: "'Raleway', sans-serif",
+            fontSize: "15px",
+            letterSpacing: "0.1em",
+            cursor: "pointer",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          ← Regresar al cielo de Fátima
+        </button>
+      </div>
+      <style>{`
+        @keyframes pulseText {
+          0%, 100% { text-shadow: 0 0 40px rgba(212,175,112,0.8), 0 0 80px rgba(212,160,192,0.5); }
+          50% { text-shadow: 0 0 60px rgba(255,255,255,0.9), 0 0 120px rgba(212,175,112,0.8); }
+        }
+      `}</style>
+    </div>
+  );
+}

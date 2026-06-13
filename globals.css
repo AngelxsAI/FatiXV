@@ -1,0 +1,54 @@
+import { useEffect, useRef } from "react";
+
+export function StarField({ count = 150 }: { count?: number }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement("div");
+      const size = Math.random() * 3 + 1;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const duration = Math.random() * 3 + 2;
+      const delay = Math.random() * 5;
+      const opacity = Math.random() * 0.7 + 0.3;
+      const isGold = Math.random() > 0.8;
+      star.style.cssText = `
+        position:absolute;
+        width:${size}px;
+        height:${size}px;
+        left:${x}%;
+        top:${y}%;
+        border-radius:50%;
+        background:${isGold ? "#d4af70" : "#fff"};
+        opacity:${opacity};
+        animation:starTwinkle ${duration}s ease-in-out ${delay}s infinite alternate;
+        pointer-events:none;
+      `;
+      container.appendChild(star);
+    }
+  }, [count]);
+
+  return (
+    <>
+      <style>{`
+        @keyframes starTwinkle {
+          0% { opacity: 0.1; transform: scale(0.8); }
+          100% { opacity: 1; transform: scale(1.3); }
+        }
+      `}</style>
+      <div
+        ref={containerRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      />
+    </>
+  );
+}

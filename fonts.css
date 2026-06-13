@@ -1,0 +1,120 @@
+import { useEffect, useRef } from "react";
+
+const VERSES = [
+  { ref: "1 Corintios 13:4", text: "El amor es paciente, es bondadoso. El amor no tiene envidia..." },
+  { ref: "Jeremías 29:11", text: "Porque yo sé los planes que tengo para ti, planes de bienestar y no de calamidad..." },
+  { ref: "Salmos 139:14", text: "Te alabo porque soy una creación admirable; tus obras son maravillosas..." },
+  { ref: "Proverbios 31:25", text: "Se viste de fuerza y dignidad, y se ríe del futuro..." },
+  { ref: "Isaías 40:31", text: "Los que esperan al Señor renovarán sus fuerzas; volarán como las águilas..." },
+  { ref: "Sofonías 3:17", text: "El Señor tu Dios está en medio de ti como guerrero victorioso. Se deleitará en ti con gozo..." },
+  { ref: "Salmos 46:5", text: "Dios está en medio de ella; no será removida. Dios la ayudará al clarear la mañana..." },
+  { ref: "Filipenses 4:13", text: "Todo lo puedo en Cristo que me fortalece..." },
+  { ref: "Efesios 3:18", text: "...para que puedan comprender cuán ancho, cuán largo, cuán alto y cuán profundo es el amor de Cristo..." },
+  { ref: "Salmos 37:4", text: "Deléitate en el Señor y él te concederá los deseos de tu corazón..." },
+  { ref: "Juan 15:12", text: "Este es mi mandamiento: que se amen los unos a los otros como yo los he amado..." },
+  { ref: "Eclesiastés 4:9", text: "Más valen dos que uno, porque obtienen más fruto de su esfuerzo..." },
+  { ref: "1 Juan 4:8", text: "El que no ama no conoce a Dios, porque Dios es amor..." },
+  { ref: "Proverbios 16:24", text: "Las palabras amables son como la miel: dulces al alma y sanadoras al cuerpo..." },
+  { ref: "Romanos 8:38-39", text: "Nada nos podrá separar del amor de Dios que es en Cristo Jesús nuestro Señor..." },
+];
+
+export function QuoteCarousel() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let x = 0;
+    const speed = 0.5;
+    let rafId: number;
+    const half = track.scrollWidth / 2;
+
+    const animate = () => {
+      x -= speed;
+      if (Math.abs(x) >= half) x = 0;
+      track.style.transform = `translateX(${x}px)`;
+      rafId = requestAnimationFrame(animate);
+    };
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const doubled = [...VERSES, ...VERSES];
+
+  return (
+    <div
+      style={{
+        overflow: "hidden",
+        position: "relative",
+        padding: "16px 0",
+      }}
+    >
+      {/* Fade edges */}
+      <div style={{
+        position: "absolute",
+        left: 0, top: 0, bottom: 0,
+        width: "80px",
+        background: "linear-gradient(to right, #08051a, transparent)",
+        zIndex: 2,
+        pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute",
+        right: 0, top: 0, bottom: 0,
+        width: "80px",
+        background: "linear-gradient(to left, #08051a, transparent)",
+        zIndex: 2,
+        pointerEvents: "none",
+      }} />
+
+      <div ref={trackRef} style={{ display: "flex", gap: "24px", width: "max-content" }}>
+        {doubled.map((v, i) => (
+          <div
+            key={i}
+            style={{
+              flexShrink: 0,
+              width: "280px",
+              background: "linear-gradient(135deg, rgba(212,160,192,0.12), rgba(212,175,112,0.08))",
+              border: "1px solid rgba(212,160,192,0.25)",
+              borderRadius: "16px",
+              padding: "16px 20px",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 0, left: 0, right: 0,
+                height: "3px",
+                background: "linear-gradient(90deg, #d4a0c0, #d4af70)",
+              }}
+            />
+            <p
+              style={{
+                fontFamily: "'Crimson Text', serif",
+                fontSize: "13px",
+                color: "#ffd6e7",
+                lineHeight: 1.6,
+                marginBottom: "10px",
+                fontStyle: "italic",
+              }}
+            >
+              "{v.text}"
+            </p>
+            <p
+              style={{
+                fontFamily: "'Raleway', sans-serif",
+                fontSize: "11px",
+                color: "#d4af70",
+                letterSpacing: "0.1em",
+              }}
+            >
+              — {v.ref}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

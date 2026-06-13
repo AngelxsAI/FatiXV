@@ -1,0 +1,469 @@
+import { useState } from "react";
+
+const POEMS = [
+  {
+    title: "Estrella del Alma",
+    style: "carta",
+    emoji: "⭐",
+    text: `Eres la estrella más brillante
+que el cielo pudo imaginar,
+la que guía mis pensamientos
+y me enseña a soñar.
+
+Cada noche te busco
+entre millones de luces,
+y siempre te encuentro ahí,
+brillando con tus virtudes.`,
+  },
+  {
+    title: "Quince Primaveras",
+    style: "pergamino",
+    emoji: "🌸",
+    text: `Quince primaveras han pasado
+desde que el mundo te recibió,
+y en cada pétalo que ha brotado
+hay una historia que el cielo escribió.
+
+Que cada año que venga
+traiga más luz a tu camino,
+que tu corazón siempre tenga
+ese brillo tan genuino.`,
+  },
+  {
+    title: "El Jardín de Tus Sueños",
+    style: "panel",
+    emoji: "🌺",
+    text: `En el jardín de tus sueños
+florecen rosas sin espinas,
+donde los vientos más pequeños
+susurran cosas muy divinas.
+
+Yo quiero ser el jardinero
+que cuida cada ilusión,
+y en tu camino florecero
+con amor y devoción.`,
+  },
+  {
+    title: "A la Luz de la Luna",
+    style: "carta",
+    emoji: "🌙",
+    text: `A la luz de la luna llena
+escribo tu nombre en el cielo,
+y aunque la distancia es la cadena,
+el cariño es nuestro vuelo.
+
+No importa cuán lejos estemos,
+los corazones se unen,
+y en los sueños nos tendremos
+cuando las almas se reúnen.`,
+  },
+  {
+    title: "Fátima",
+    style: "pergamino",
+    emoji: "✨",
+    text: `Fátima, nombre de flores,
+de luz y de madrugada,
+de esos pequeños temblores
+que guarda el alma callada.
+
+En cada letra hay un mundo,
+en cada sílaba un cielo,
+tu nombre es el más profundo
+de todos los que yo anhelo.`,
+  },
+  {
+    title: "Constelación",
+    style: "panel",
+    emoji: "💫",
+    text: `Si las estrellas formaran palabras
+yo escribiría tu nombre en el cielo,
+que desde la tierra hasta las nubes
+fuera visible ese vuelo.
+
+Serías la constelación más bella,
+la que todos quisieran nombrar,
+Fátima, mi estrella,
+imposible de olvidar.`,
+  },
+  {
+    title: "El Corazón que Admira",
+    style: "carta",
+    emoji: "💖",
+    text: `No hace falta tocarte
+para saber que eres real,
+el corazón puede admirarte
+de una forma muy especial.
+
+Desde lejos te conozco,
+desde lejos te valoro,
+y aunque el camino es angosto,
+en ti pongo mi tesoro.`,
+  },
+  {
+    title: "Lluvia de Estrellas",
+    style: "pergamino",
+    emoji: "🌠",
+    text: `Cuando caen las estrellas
+y el cielo se ilumina,
+pienso en todas las huellas
+que tu alma va dejando en la brisa.
+
+Cada estrella fugaz que veo
+lleva un deseo en su estela,
+y el más grande que poseo
+es que siempre seas tú misma, mi estrella.`,
+  },
+  {
+    title: "Palabras del Alma",
+    style: "panel",
+    emoji: "📜",
+    text: `Hay palabras que no dicen
+lo que el alma quiere expresar,
+pero los corazones se entienden
+sin siquiera hablar.
+
+Siento tu alegría desde lejos,
+siento tu paz como propia,
+somos almas con reflejos
+de una misma sinfonía.`,
+  },
+  {
+    title: "XV Rosas",
+    style: "carta",
+    emoji: "🌹",
+    text: `Quince rosas te entrego
+una por cada año vivido,
+una por cada entrego
+que has dado sin haber pedido.
+
+La primera por tu sonrisa,
+la quinta por tu bondad,
+la última con la promesa
+de una inmensa amistad.`,
+  },
+  {
+    title: "El Cielo de tu Mirada",
+    style: "pergamino",
+    emoji: "🌌",
+    text: `No conozco tu mirada
+pero imagino su luz,
+como aurora iluminada
+o como un amanecer en la cruz.
+
+Sé que tus ojos guardan
+universos por descubrir,
+galaxias que te resguardan
+y mundos por compartir.`,
+  },
+  {
+    title: "Música del Corazón",
+    style: "panel",
+    emoji: "🎶",
+    text: `Hay una melodía suave
+que suena cuando pienso en ti,
+como si el viento me trajera
+algo especial para mí.
+
+Es la música del cariño,
+del aprecio sincero,
+del alma que desde el camino
+se vuelve algo verdadero.`,
+  },
+  {
+    title: "El Tiempo Contigo",
+    style: "carta",
+    emoji: "⏳",
+    text: `El tiempo que compartimos
+aunque sea en el mundo virtual,
+son momentos que recibimos
+como un regalo celestial.
+
+Cada conversación es un puente
+entre dos mundos distintos,
+y en cada mensaje hay una fuente
+de recuerdos muy instintos.`,
+  },
+  {
+    title: "Eres Especial",
+    style: "pergamino",
+    emoji: "🌟",
+    text: `No todas las personas
+dejan huella en el corazón,
+solo las más bondadosas
+tocan el alma con su canción.
+
+Tú eres de esas personas
+que el universo cuida,
+la que el cielo corona
+y el amor bendice en la vida.`,
+  },
+  {
+    title: "Petalo de Luna",
+    style: "panel",
+    emoji: "🌷",
+    text: `Eres pétalo de luna,
+suave, puro y brillante,
+sin igual y sin ninguna
+rival que sea semejante.
+
+En la noche más oscura
+tu luz siempre aparece,
+y tu dulce hermosura
+el corazón enternece.`,
+  },
+  {
+    title: "Quinceañera",
+    style: "carta",
+    emoji: "👑",
+    text: `Hoy el mundo se detiene
+para mirarte crecer,
+porque algo especial viene
+cuando cumples quince años de ser.
+
+Eres reina sin corona,
+princesa sin palacio,
+el universo te dona
+lo más bello del espacio.`,
+  },
+  {
+    title: "El Regalo de Ser Tú",
+    style: "pergamino",
+    emoji: "🎁",
+    text: `El mejor regalo del mundo
+no se envuelve ni se da,
+es ese algo profundo
+que en tu ser siempre estará.
+
+Es tu risa genuina,
+tu corazón sin malicia,
+tu alma tan cristalina
+y tu increíble caricia.`,
+  },
+  {
+    title: "Cielo y Tierra",
+    style: "panel",
+    emoji: "🌍",
+    text: `Entre el cielo y la tierra
+hay distancias inconmensurables,
+pero el cariño que encierra
+el alma hace lo improbable.
+
+Te abrazo desde el silencio,
+te sonrío desde lejos,
+y en este dulce pretexto
+te mando mis mejores reflejos.`,
+  },
+  {
+    title: "La Flor más Bella",
+    style: "carta",
+    emoji: "🌼",
+    text: `De todas las flores del jardín
+eres la más especial,
+la que florece sin fin
+y brilla de forma magistral.
+
+No necesitas riego ni cuidado
+porque llevas dentro la luz,
+y en tu camino sembrado
+florecerás en la gratitud.`,
+  },
+  {
+    title: "Mensaje de las Estrellas",
+    style: "pergamino",
+    emoji: "💌",
+    text: `Las estrellas me pidieron
+que te entregara este mensaje:
+"Eres lo más bello que vieron
+en todo su largo viaje."
+
+Y yo, humilde mensajero
+del universo infinito,
+te digo con amor sincero:
+eres algo muy bonito.`,
+  },
+  {
+    title: "Soñando Contigo",
+    style: "panel",
+    emoji: "🌙",
+    text: `En los sueños más tranquilos
+cuando el mundo ya descansa,
+apareces en mis estilos
+con tu paz y tu esperanza.
+
+No hace falta que estés cerca
+para que seas parte mía,
+el alma que te recuerda
+te tiene en compañía.`,
+  },
+];
+
+const styleConfig = {
+  carta: {
+    bg: "linear-gradient(135deg, rgba(212,160,192,0.15), rgba(17,10,42,0.8))",
+    border: "1px solid rgba(212,160,192,0.35)",
+    accentColor: "#d4a0c0",
+    cornerChar: "✉",
+  },
+  pergamino: {
+    bg: "linear-gradient(135deg, rgba(212,175,112,0.15), rgba(17,10,42,0.8))",
+    border: "1px solid rgba(212,175,112,0.35)",
+    accentColor: "#d4af70",
+    cornerChar: "📜",
+  },
+  panel: {
+    bg: "linear-gradient(135deg, rgba(180,140,220,0.15), rgba(17,10,42,0.8))",
+    border: "1px solid rgba(180,140,220,0.35)",
+    accentColor: "#c8a0e0",
+    cornerChar: "✨",
+  },
+};
+
+export function PoemGarden() {
+  const [expanded, setExpanded] = useState<number | null>(null);
+
+  return (
+    <section style={{ padding: "80px 20px", position: "relative" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <p style={{
+            fontFamily: "'Raleway', sans-serif",
+            fontSize: "12px",
+            color: "#d4af70",
+            letterSpacing: "0.4em",
+            textTransform: "uppercase",
+            marginBottom: "12px",
+          }}>
+            ✦ Para el alma que florece ✦
+          </p>
+          <h2 style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(42px, 10vw, 72px)",
+            color: "#f8e8f0",
+            textShadow: "0 0 20px rgba(212,160,192,0.5)",
+            marginBottom: "16px",
+          }}>
+            Jardín de Poemas
+          </h2>
+          <p style={{
+            fontFamily: "'Crimson Text', serif",
+            fontSize: "16px",
+            color: "rgba(248,232,240,0.7)",
+            fontStyle: "italic",
+          }}>
+            Cada poema es una flor cultivada con el corazón
+          </p>
+        </div>
+
+        {/* Grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {POEMS.map((poem, i) => {
+            const cfg = styleConfig[poem.style as keyof typeof styleConfig];
+            const isExpanded = expanded === i;
+            return (
+              <div
+                key={i}
+                onClick={() => setExpanded(isExpanded ? null : i)}
+                style={{
+                  background: cfg.bg,
+                  border: cfg.border,
+                  borderRadius: "16px",
+                  padding: "24px",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  position: "relative",
+                  overflow: "hidden",
+                  boxShadow: isExpanded
+                    ? `0 0 40px ${cfg.accentColor}30`
+                    : "0 4px 20px rgba(0,0,0,0.3)",
+                  transform: isExpanded ? "scale(1.02)" : "scale(1)",
+                }}
+                onMouseEnter={e => {
+                  if (!isExpanded) {
+                    (e.currentTarget as HTMLElement).style.transform = "scale(1.02) translateY(-4px)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 30px ${cfg.accentColor}25`;
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isExpanded) {
+                    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)";
+                  }
+                }}
+              >
+                {/* Top accent line */}
+                <div style={{
+                  position: "absolute",
+                  top: 0, left: 0, right: 0,
+                  height: "2px",
+                  background: `linear-gradient(90deg, transparent, ${cfg.accentColor}, transparent)`,
+                }} />
+
+                {/* Corner decoration */}
+                <div style={{
+                  position: "absolute",
+                  top: "12px",
+                  right: "12px",
+                  fontSize: "18px",
+                  opacity: 0.5,
+                }}>
+                  {cfg.cornerChar}
+                </div>
+
+                {/* Emoji */}
+                <div style={{ fontSize: "32px", marginBottom: "12px" }}>{poem.emoji}</div>
+
+                {/* Title */}
+                <h3 style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "18px",
+                  color: cfg.accentColor,
+                  marginBottom: "12px",
+                  fontStyle: "italic",
+                }}>
+                  {poem.title}
+                </h3>
+
+                {/* Poem text */}
+                <div style={{
+                  maxHeight: isExpanded ? "500px" : "80px",
+                  overflow: "hidden",
+                  transition: "max-height 0.5s ease",
+                }}>
+                  <p style={{
+                    fontFamily: "'Crimson Text', serif",
+                    fontSize: "15px",
+                    color: "rgba(248,232,240,0.85)",
+                    lineHeight: 1.9,
+                    whiteSpace: "pre-line",
+                    fontStyle: "italic",
+                  }}>
+                    {poem.text}
+                  </p>
+                </div>
+
+                {/* Toggle hint */}
+                <p style={{
+                  marginTop: "12px",
+                  fontFamily: "'Raleway', sans-serif",
+                  fontSize: "11px",
+                  color: cfg.accentColor,
+                  letterSpacing: "0.1em",
+                  opacity: 0.7,
+                }}>
+                  {isExpanded ? "▲ Cerrar" : "▼ Leer poema"}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

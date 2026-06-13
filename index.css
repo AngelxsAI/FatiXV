@@ -1,0 +1,110 @@
+const PHRASES = [
+  { text: "Eres exactamente quién debes ser, en el momento exacto en que debes serlo.", author: "El universo" },
+  { text: "La belleza más grande es la que viene de adentro, y la tuya es infinita.", author: "Las estrellas" },
+  { text: "Hay personas que llegan a tu vida para quedarse en tu corazón para siempre.", author: "La vida" },
+  { text: "El corazón que ama con sinceridad nunca está realmente solo.", author: "El alma" },
+  { text: "Cada amanecer que ves es un nuevo capítulo de tu historia hermosa.", author: "El tiempo" },
+  { text: "No necesitas ser perfecta para ser increíble. Ya lo eres.", author: "El cielo" },
+  { text: "Los sueños más hermosos son los que se cultivan con paciencia y fe.", author: "La esperanza" },
+  { text: "Donde hay amor verdadero, la distancia no existe.", author: "El corazón" },
+];
+
+export function PhrasesSection() {
+  return (
+    <section style={{ padding: "80px 20px", position: "relative" }}>
+      {/* Decorative orb */}
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "600px",
+        height: "600px",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(212,160,192,0.08) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+
+      <div style={{ maxWidth: "900px", margin: "0 auto", position: "relative" }}>
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <p style={{
+            fontFamily: "'Raleway', sans-serif",
+            fontSize: "12px",
+            color: "#d4af70",
+            letterSpacing: "0.4em",
+            textTransform: "uppercase",
+            marginBottom: "12px",
+          }}>
+            ✦ Palabras que iluminan ✦
+          </p>
+          <h2 style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(42px, 10vw, 72px)",
+            color: "#f8e8f0",
+            textShadow: "0 0 20px rgba(212,160,192,0.5)",
+          }}>
+            Frases del Alma
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+          {PHRASES.map((phrase, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                gap: "24px",
+                alignItems: "flex-start",
+                padding: "28px 0",
+                borderBottom: i < PHRASES.length - 1 ? "1px solid rgba(212,160,192,0.1)" : "none",
+                flexDirection: i % 2 === 0 ? "row" : "row-reverse",
+              }}
+            >
+              {/* Number / Star */}
+              <div style={{
+                flexShrink: 0,
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background: i % 3 === 0
+                  ? "linear-gradient(135deg, rgba(212,160,192,0.3), rgba(212,175,112,0.2))"
+                  : i % 3 === 1
+                  ? "linear-gradient(135deg, rgba(212,175,112,0.3), rgba(180,140,220,0.2))"
+                  : "linear-gradient(135deg, rgba(180,140,220,0.3), rgba(212,160,192,0.2))",
+                border: "1px solid rgba(212,160,192,0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "18px",
+              }}>
+                {["⭐", "🌸", "💫", "✨", "🌟", "💖", "🌙", "🌺"][i]}
+              </div>
+
+              <div style={{ flex: 1, textAlign: i % 2 === 0 ? "left" : "right" }}>
+                <p style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(16px, 3.5vw, 21px)",
+                  color: "#f8e8f0",
+                  lineHeight: 1.6,
+                  fontStyle: "italic",
+                  marginBottom: "10px",
+                }}>
+                  "{phrase.text}"
+                </p>
+                <p style={{
+                  fontFamily: "'Raleway', sans-serif",
+                  fontSize: "12px",
+                  color: "#d4af70",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                }}>
+                  — {phrase.author}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
